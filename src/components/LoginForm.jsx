@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Container, Snackbar } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate , Link} from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -8,10 +9,17 @@ const LoginForm = () => {
   const [error, setError] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const navigate = useNavigate();
-
+  const users = useSelector((state) => state.user.users);
+ 
   const handleLogin = () => {
-    if (email === 'user@gmail.com' && password === 'password') {
-      navigate('/home');
+    const storedUser = users.find((user) => user?.email === email);
+    if (storedUser) {
+      if (password === storedUser.password) {
+        navigate('/home');
+      } else {
+        setError('Invalid login credentials');
+        setOpenSnackbar(true);
+      }
     } else {
       setError('Invalid login credentials');
       setOpenSnackbar(true);
@@ -20,6 +28,7 @@ const LoginForm = () => {
 
   return (
     <Container>
+      <h1>Login Form</h1>
       <TextField
         label="Email"
         value={email}
@@ -49,6 +58,9 @@ const LoginForm = () => {
         message={error}
         onClose={() => setOpenSnackbar(false)}
       />
+      <p className="mt-5">
+          or <Link to={"/signup"}>create a new account!</Link>
+      </p>
     </Container>
   );
 };

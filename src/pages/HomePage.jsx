@@ -1,11 +1,9 @@
 import React from 'react';
 import UsersTable from '../components/UsersTable';
-import FilterForm from '../components/FilterForm';
-
 const HomePage = () => {
   return (
     <>
-      <FilterForm />
+    <h1>Dashboard</h1>
       <UsersTable />
     </>
   );

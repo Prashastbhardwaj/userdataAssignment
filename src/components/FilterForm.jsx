@@ -1,44 +1,49 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TextField, Button } from '@mui/material';
-import { useDispatch } from 'react-redux';
-import { useState } from 'react';
-import { setFilter } from '../store/actions/filterActions';
 
-const FilterForm = () => { 
-  const dispatch = useDispatch();
-  
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [dob, setDob] = useState('');
-  
-  const handleSubmit = () => {
-    dispatch(setFilter({ firstName, lastName, dob }));
+  const FilterForm = ({ setFilteredUsers, users }) => {
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [dob, setDob] = useState('');
+    
+    const handleFilter = () => {
+      let filtered = [...users]; 
+      if (firstName) {
+        filtered = filtered.filter(user => user.name.first.toLowerCase().includes(firstName.toLowerCase()));
+      }
+      if (lastName) {
+        filtered = filtered.filter(user => user.name.last.toLowerCase().includes(lastName.toLowerCase()));
+      }
+      if (dob) {
+        filtered = filtered.filter(user => new Date(user.dob.date).toLocaleDateString() === new Date(dob).toLocaleDateString());
+      }
+      setFilteredUsers(filtered); 
+    };
+
+    return (
+      <div>
+        <TextField
+          label="First Name"
+          value={firstName}
+          onChange={(e) => setFirstName(e.target.value)}
+        />
+        <TextField
+          label="Last Name"
+          value={lastName}
+          onChange={(e) => setLastName(e.target.value)}
+        />
+        <TextField
+          label="DOB"
+          type="date"
+          value={dob}
+          onChange={(e) => setDob(e.target.value)}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+        <Button onClick={handleFilter}>Filter</Button>
+      </div>
+    );
   };
-
-  return (
-    <div>
-      <TextField
-        label="First Name"
-        value={firstName}
-        onChange={(e) => setFirstName(e.target.value)}
-      />
-      <TextField
-        label="Last Name"
-        value={lastName}
-        onChange={(e) => setLastName(e.target.value)}
-      />
-      <TextField
-        label="DOB"
-        type="date"
-        value={dob}
-        onChange={(e) => setDob(e.target.value)}
-        InputLabelProps={{
-          shrink: true,
-        }}
-      />
-      <Button onClick={handleSubmit}>Filter</Button>
-    </div>
-  );
-};
 
 export default FilterForm;
